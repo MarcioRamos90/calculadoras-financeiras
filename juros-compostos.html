@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Juros Compostos com Aportes Mensais</title>
+  <meta
+    name="description"
+    content="Calcule quanto seu dinheiro pode render com juros compostos e aportes mensais. Veja o valor final, total investido, juros ganhos e o gráfico de evolução."
+  />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ctext x='50' y='68' font-size='56' font-family='Arial, sans-serif' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo">Calculadoras<span>Financeiras</span></a>
+      <nav class="nav-principal">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="pagina-intro">
+        <h1>Calculadora de Juros Compostos com Aportes Mensais</h1>
+        <p>
+          Informe o valor inicial, a taxa de juros, o período e quanto pretende investir por mês
+          para simular a evolução do seu dinheiro.
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="form-calculadora" class="form-calculadora">
+          <div class="form-grid">
+            <div class="campo">
+              <label for="valorInicial">Valor inicial (R$)</label>
+              <input type="number" id="valorInicial" name="valorInicial" min="0" step="0.01" value="1000" required />
+            </div>
+
+            <div class="campo">
+              <label for="aporteMensal">Aporte mensal (R$)</label>
+              <input type="number" id="aporteMensal" name="aporteMensal" min="0" step="0.01" value="200" required />
+            </div>
+
+            <div class="campo">
+              <label for="taxaValor">Taxa de juros</label>
+              <div class="campo-composto">
+                <input type="number" id="taxaValor" name="taxaValor" min="0" step="0.01" value="1" required />
+                <select id="taxaPeriodo" name="taxaPeriodo">
+                  <option value="mensal">% ao mês</option>
+                  <option value="anual">% ao ano</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="tempoValor">Período</label>
+              <div class="campo-composto">
+                <input type="number" id="tempoValor" name="tempoValor" min="1" step="1" value="5" required />
+                <select id="tempoPeriodo" name="tempoPeriodo">
+                  <option value="anos">anos</option>
+                  <option value="meses">meses</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-calcular">Calcular</button>
+        </form>
+      </section>
+
+      <section id="painel-resultado" class="painel-resultado" hidden>
+        <div class="resultado-destaque">
+          <div class="rotulo">Valor final após <span id="resultado-periodo"></span></div>
+          <div class="valor" id="resultado-valor-final"></div>
+        </div>
+
+        <div class="resultado-grid">
+          <div class="stat">
+            <div class="rotulo">Total investido</div>
+            <div class="valor" id="resultado-total-investido"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Total em juros</div>
+            <div class="valor" id="resultado-total-juros"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Valor inicial</div>
+            <div class="valor" id="resultado-valor-inicial"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Evolução do investimento</h2>
+          <div class="grafico-wrap">
+            <canvas id="grafico-evolucao"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--retangulo" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="card conteudo-explicativo">
+        <h2>O que são juros compostos?</h2>
+        <p>
+          Juros compostos são os juros calculados não apenas sobre o valor inicial investido,
+          mas também sobre os juros acumulados dos períodos anteriores — é o famoso "juros sobre
+          juros". Isso faz com que o crescimento do investimento seja exponencial ao longo do
+          tempo, diferente dos juros simples, em que o rendimento é sempre proporcional apenas ao
+          valor inicial.
+        </p>
+
+        <h2>Por que os aportes mensais fazem diferença?</h2>
+        <p>
+          Além dos juros compostos, adicionar um valor fixo todo mês acelera ainda mais o
+          crescimento do patrimônio. Cada novo aporte passa a render juros pelo tempo restante da
+          simulação, o que significa que começar cedo — mesmo com valores pequenos — tende a gerar
+          um resultado final muito maior do que esperar para investir uma quantia alta de uma vez
+          só, mais tarde.
+        </p>
+
+        <h2>Como usar esta calculadora</h2>
+        <p>
+          Preencha o valor inicial que você já tem disponível, quanto pretende investir por mês, a
+          taxa de juros esperada (mensal ou anual) e o período total da simulação. A calculadora
+          mostra o valor final estimado, quanto desse total veio do seu próprio bolso e quanto veio
+          dos juros, além de um gráfico comparando a evolução do saldo com o total investido mês a
+          mês.
+        </p>
+
+        <p>
+          Os resultados são estimativas para fins de planejamento e educação financeira — não
+          consideram impostos, taxas de administração ou variações reais de mercado, que podem
+          alterar o rendimento final de um investimento real.
+        </p>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Calculadoras Financeiras. Todos os direitos reservados.</p>
+      <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
