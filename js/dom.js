@@ -3,6 +3,39 @@
 import { taxaAnualParaMensal, percentualParaDecimal, anosParaMeses } from './calculos.js';
 import { formatarMoeda, formatarPeriodo } from './formatador.js';
 
+/** Lê e normaliza os valores do formulário da calculadora de juros compostos com inflação. */
+export function lerFormularioInflacao(form) {
+  const valorInicial = Number(form.valorInicial.value) || 0;
+  const aporteMensal = Number(form.aporteMensal.value) || 0;
+  const taxaValor = Number(form.taxaValor.value) || 0;
+  const taxaPeriodo = form.taxaPeriodo.value; // 'mensal' | 'anual'
+  const tempoValor = Number(form.tempoValor.value) || 0;
+  const tempoPeriodo = form.tempoPeriodo.value; // 'meses' | 'anos'
+  const inflacaoAnual = Number(form.inflacaoAnual.value) || 0;
+
+  const taxaMensal =
+    taxaPeriodo === 'anual'
+      ? taxaAnualParaMensal(taxaValor)
+      : percentualParaDecimal(taxaValor);
+
+  const meses = tempoPeriodo === 'anos' ? anosParaMeses(tempoValor) : tempoValor;
+  const inflacaoMensal = taxaAnualParaMensal(inflacaoAnual);
+
+  return { valorInicial, aporteMensal, taxaMensal, meses, inflacaoMensal };
+}
+
+/** Preenche os cartões de resultado comparando valor nominal e valor real (ajustado pela inflação). */
+export function renderResultadoInflacao(elementos, resultadoNominal, resultadoReal, meses) {
+  const perdaInflacao = resultadoNominal.valorFinal - resultadoReal.valorFinal;
+
+  elementos.valorFinalReal.textContent = formatarMoeda(resultadoReal.valorFinal);
+  elementos.valorFinalNominal.textContent = formatarMoeda(resultadoNominal.valorFinal);
+  elementos.perdaInflacao.textContent = formatarMoeda(perdaInflacao);
+  elementos.totalInvestido.textContent = formatarMoeda(resultadoNominal.totalInvestido);
+  elementos.periodo.textContent = formatarPeriodo(meses);
+  elementos.painelResultado.hidden = false;
+}
+
 /** Lê e normaliza os valores do formulário da calculadora de juros compostos. */
 export function lerFormulario(form) {
   const valorInicial = Number(form.valorInicial.value) || 0;
@@ -91,4 +124,68 @@ export function renderGrafico(canvas, evolucao) {
   }
 
   grafico = new Chart(canvas, { type: 'line', data: dados, options: opcoes });
+}
+
+let graficoInflacao = null;
+
+/** Desenha (ou atualiza) o gráfico comparando a evolução nominal e a evolução real (ajustada pela inflação). */
+export function renderGraficoInflacao(canvas, evolucaoNominal, evolucaoReal) {
+  const passo = Math.max(1, Math.ceil(evolucaoNominal.length / 24));
+  const filtro = (_, i) => i % passo === 0 || i === evolucaoNominal.length - 1;
+
+  const pontosNominal = evolucaoNominal.filter(filtro);
+  const pontosReal = evolucaoReal.filter(filtro);
+
+  const labels = pontosNominal.map((p) => `${p.mes}m`);
+  const saldosNominal = pontosNominal.map((p) => Number(p.saldo.toFixed(2)));
+  const saldosReal = pontosReal.map((p) => Number(p.saldo.toFixed(2)));
+
+  const dados = {
+    labels,
+    datasets: [
+      {
+        label: 'Saldo nominal',
+        data: saldosNominal,
+        borderColor: '#94a3b8',
+        borderDash: [4, 4],
+        fill: false,
+        tension: 0.25,
+        pointRadius: 0,
+      },
+      {
+        label: 'Saldo real (poder de compra de hoje)',
+        data: saldosReal,
+        borderColor: '#0f766e',
+        backgroundColor: 'rgba(15, 118, 110, 0.12)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  const opcoes = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      y: {
+        ticks: {
+          callback: (valor) =>
+            valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }),
+        },
+      },
+    },
+    plugins: {
+      legend: { position: 'bottom' },
+    },
+  };
+
+  if (graficoInflacao) {
+    graficoInflacao.data = dados;
+    graficoInflacao.update();
+    return;
+  }
+
+  graficoInflacao = new Chart(canvas, { type: 'line', data: dados, options: opcoes });
 }

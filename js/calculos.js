@@ -41,3 +41,8 @@ export function percentualParaDecimal(valorPercentual) {
 export function anosParaMeses(anos) {
   return anos * 12;
 }
+
+/** Converte uma taxa nominal mensal em taxa real mensal, descontando a inflação (equação de Fisher). */
+export function taxaRealMensal(taxaNominalMensal, taxaInflacaoMensal) {
+  return (1 + taxaNominalMensal) / (1 + taxaInflacaoMensal) - 1;
+}

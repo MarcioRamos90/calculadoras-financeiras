@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SES8J0R5D2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SES8J0R5D2');
+  </script>
+  <title>Calculadora de Juros Compostos com Inflação (Valor Real)</title>
+  <meta
+    name="description"
+    content="Descubra quanto seu investimento realmente vale descontando a inflação. Compare o valor nominal e o valor real (poder de compra) de juros compostos com aportes mensais."
+  />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ctext x='50' y='68' font-size='56' font-family='Arial, sans-serif' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo">Calculadoras<span>Financeiras</span></a>
+      <nav class="nav-principal">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="pagina-intro">
+        <h1>Calculadora de Juros Compostos com Inflação</h1>
+        <p>
+          A inflação corrói o poder de compra do seu dinheiro ao longo do tempo. Informe seus
+          dados de investimento e a inflação esperada para ver o valor <strong>nominal</strong>
+          (na cara, sem ajuste) e o valor <strong>real</strong> (o que esse dinheiro realmente
+          vai comprar no futuro).
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="form-calculadora" class="form-calculadora">
+          <div class="form-grid">
+            <div class="campo">
+              <label for="valorInicial">Valor inicial (R$)</label>
+              <input type="number" id="valorInicial" name="valorInicial" min="0" step="0.01" value="1000" required />
+            </div>
+
+            <div class="campo">
+              <label for="aporteMensal">Aporte mensal (R$)</label>
+              <input type="number" id="aporteMensal" name="aporteMensal" min="0" step="0.01" value="200" required />
+            </div>
+
+            <div class="campo">
+              <label for="taxaValor">Taxa de juros</label>
+              <div class="campo-composto">
+                <input type="number" id="taxaValor" name="taxaValor" min="0" step="0.01" value="1" required />
+                <select id="taxaPeriodo" name="taxaPeriodo">
+                  <option value="mensal">% ao mês</option>
+                  <option value="anual">% ao ano</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="inflacaoAnual">Inflação esperada (% ao ano)</label>
+              <input type="number" id="inflacaoAnual" name="inflacaoAnual" min="0" step="0.01" value="4.5" required />
+            </div>
+
+            <div class="campo">
+              <label for="tempoValor">Período</label>
+              <div class="campo-composto">
+                <input type="number" id="tempoValor" name="tempoValor" min="1" step="1" value="5" required />
+                <select id="tempoPeriodo" name="tempoPeriodo">
+                  <option value="anos">anos</option>
+                  <option value="meses">meses</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-calcular">Calcular</button>
+        </form>
+      </section>
+
+      <section id="painel-resultado" class="painel-resultado" hidden>
+        <div class="resultado-destaque">
+          <div class="rotulo">Valor real (poder de compra de hoje) após <span id="resultado-periodo"></span></div>
+          <div class="valor" id="resultado-valor-final-real"></div>
+        </div>
+
+        <div class="resultado-grid">
+          <div class="stat">
+            <div class="rotulo">Valor nominal (sem ajuste)</div>
+            <div class="valor" id="resultado-valor-final-nominal"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Perdido para a inflação</div>
+            <div class="valor" id="resultado-perda-inflacao"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Total investido</div>
+            <div class="valor" id="resultado-total-investido"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Evolução: nominal vs. real</h2>
+          <div class="grafico-wrap">
+            <canvas id="grafico-evolucao"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--retangulo" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="card conteudo-explicativo">
+        <h2>Por que o valor nominal engana?</h2>
+        <p>
+          Quando uma calculadora de juros compostos mostra só o valor nominal, ela ignora que a
+          inflação também está "trabalhando" ao longo do mesmo período — só que contra você. R$
+          10.000 daqui a 10 anos não compram a mesma quantidade de coisas que R$ 10.000 compram
+          hoje. O valor <strong>real</strong> ajusta o resultado para refletir o poder de compra
+          em termos de hoje, dando uma visão mais honesta do quanto seu investimento realmente
+          rendeu.
+        </p>
+
+        <h2>Como o cálculo é feito</h2>
+        <p>
+          Esta calculadora usa a taxa de juros nominal que você informou e a taxa de inflação
+          esperada para derivar uma <strong>taxa de juros real</strong>, através da equação de
+          Fisher. A evolução do investimento é então simulada duas vezes: uma com a taxa nominal
+          (para mostrar o valor "de fachada") e outra com a taxa real (para mostrar o poder de
+          compra efetivo).
+        </p>
+
+        <h2>De onde vem a inflação esperada?</h2>
+        <p>
+          O valor padrão sugerido (4,5% ao ano) é próximo da meta de inflação de longo prazo
+          usada como referência no Brasil, mas você pode ajustar para qualquer cenário que queira
+          simular — inflação mais alta reduz o valor real projetado, inflação mais baixa aproxima
+          o valor real do valor nominal.
+        </p>
+
+        <p>
+          Os resultados são estimativas para fins de planejamento e educação financeira — não
+          consideram impostos, taxas de administração ou variações reais de mercado.
+        </p>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Calculadoras Financeiras. Todos os direitos reservados.</p>
+      <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="js/main-inflacao.js"></script>
+</body>
+</html>
