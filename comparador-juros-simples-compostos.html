@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SES8J0R5D2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SES8J0R5D2');
+  </script>
+  <title>Comparador: Juros Simples vs. Juros Compostos</title>
+  <meta
+    name="description"
+    content="Compare lado a lado quanto um investimento rende no regime de juros simples e no regime de juros compostos, para o mesmo valor, taxa e período."
+  />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ctext x='50' y='68' font-size='56' font-family='Arial, sans-serif' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo">Calculadoras<span>Financeiras</span></a>
+      <nav class="nav-principal">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="pagina-intro">
+        <h1>Comparador: Juros Simples vs. Juros Compostos</h1>
+        <p>
+          Informe o valor investido, a taxa de juros e o período para ver, lado a lado, a
+          diferença entre os dois regimes de juros ao longo do tempo.
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="form-calculadora" class="form-calculadora">
+          <div class="form-grid">
+            <div class="campo">
+              <label for="valorInicial">Valor investido (R$)</label>
+              <input type="number" id="valorInicial" name="valorInicial" min="0" step="0.01" value="1000" required />
+            </div>
+
+            <div class="campo">
+              <label for="taxaValor">Taxa de juros</label>
+              <div class="campo-composto">
+                <input type="number" id="taxaValor" name="taxaValor" min="0" step="0.01" value="1" required />
+                <select id="taxaPeriodo" name="taxaPeriodo">
+                  <option value="mensal">% ao mês</option>
+                  <option value="anual">% ao ano</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="tempoValor">Período</label>
+              <div class="campo-composto">
+                <input type="number" id="tempoValor" name="tempoValor" min="1" step="1" value="5" required />
+                <select id="tempoPeriodo" name="tempoPeriodo">
+                  <option value="anos">anos</option>
+                  <option value="meses">meses</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-calcular">Calcular</button>
+        </form>
+      </section>
+
+      <section id="painel-resultado" class="painel-resultado" hidden>
+        <div class="resultado-destaque">
+          <div class="rotulo">Juros compostos após <span id="resultado-periodo"></span></div>
+          <div class="valor" id="resultado-valor-final-composto"></div>
+        </div>
+
+        <div class="resultado-grid">
+          <div class="stat">
+            <div class="rotulo">Juros simples (mesmo período)</div>
+            <div class="valor" id="resultado-valor-final-simples"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Diferença a favor do composto</div>
+            <div class="valor" id="resultado-diferenca"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Evolução: simples vs. composto</h2>
+          <div class="grafico-wrap">
+            <canvas id="grafico-evolucao"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--retangulo" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="card conteudo-explicativo">
+        <h2>Qual a diferença entre juros simples e juros compostos?</h2>
+        <p>
+          Nos <strong>juros simples</strong>, o juro de cada período é calculado sempre sobre o
+          valor inicial investido — ele cresce de forma linear ao longo do tempo. Nos
+          <strong>juros compostos</strong>, o juro de cada período é calculado sobre o valor
+          inicial <em>mais</em> os juros já acumulados — é o efeito "juros sobre juros", que faz
+          o crescimento ser exponencial em vez de linear.
+        </p>
+
+        <h2>Por que isso importa na prática?</h2>
+        <p>
+          Para períodos curtos, a diferença entre os dois regimes costuma ser pequena. Mas quanto
+          maior o prazo, maior a distância entre as duas curvas — é por isso que investimentos de
+          longo prazo se beneficiam tanto dos juros compostos, e por que dívidas com juros
+          compostos (como cartão de crédito) podem crescer tão rápido quando não pagas.
+        </p>
+
+        <h2>Onde cada regime aparece no dia a dia</h2>
+        <p>
+          Juros simples são mais comuns em alguns empréstimos de curto prazo e em cálculos
+          básicos de multas e correções. Juros compostos são o padrão na maioria dos
+          investimentos (poupança, CDB, Tesouro Direto, fundos) e também em financiamentos e
+          dívidas rotativas — entender a diferença ajuda tanto a investir melhor quanto a evitar
+          dívidas que crescem mais rápido do que parecem.
+        </p>
+
+        <p>
+          Os resultados são estimativas para fins de planejamento e educação financeira — não
+          consideram impostos, taxas de administração ou variações reais de mercado.
+        </p>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Calculadoras Financeiras. Todos os direitos reservados.</p>
+      <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="js/main-comparador.js"></script>
+</body>
+</html>

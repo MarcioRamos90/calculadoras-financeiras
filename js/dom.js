@@ -65,6 +65,99 @@ export function renderResultado(elementos, resultado, meses, valorInicial) {
   elementos.painelResultado.hidden = false;
 }
 
+/** Lê e normaliza os valores do formulário do comparador de juros simples vs. compostos. */
+export function lerFormularioComparador(form) {
+  const valorInicial = Number(form.valorInicial.value) || 0;
+  const taxaValor = Number(form.taxaValor.value) || 0;
+  const taxaPeriodo = form.taxaPeriodo.value; // 'mensal' | 'anual'
+  const tempoValor = Number(form.tempoValor.value) || 0;
+  const tempoPeriodo = form.tempoPeriodo.value; // 'meses' | 'anos'
+
+  const taxaMensal =
+    taxaPeriodo === 'anual'
+      ? taxaAnualParaMensal(taxaValor)
+      : percentualParaDecimal(taxaValor);
+
+  const meses = tempoPeriodo === 'anos' ? anosParaMeses(tempoValor) : tempoValor;
+
+  return { valorInicial, taxaMensal, meses };
+}
+
+/** Preenche os cartões de resultado comparando juros simples e juros compostos. */
+export function renderResultadoComparador(elementos, resultadoSimples, resultadoComposto, meses) {
+  const diferenca = resultadoComposto.valorFinal - resultadoSimples.valorFinal;
+
+  elementos.valorFinalComposto.textContent = formatarMoeda(resultadoComposto.valorFinal);
+  elementos.valorFinalSimples.textContent = formatarMoeda(resultadoSimples.valorFinal);
+  elementos.diferenca.textContent = formatarMoeda(diferenca);
+  elementos.periodo.textContent = formatarPeriodo(meses);
+  elementos.painelResultado.hidden = false;
+}
+
+let graficoComparador = null;
+
+/** Desenha (ou atualiza) o gráfico comparando a evolução de juros simples e juros compostos. */
+export function renderGraficoComparador(canvas, evolucaoSimples, evolucaoComposto) {
+  const passo = Math.max(1, Math.ceil(evolucaoComposto.length / 24));
+  const filtro = (_, i) => i % passo === 0 || i === evolucaoComposto.length - 1;
+
+  const pontosSimples = evolucaoSimples.filter(filtro);
+  const pontosComposto = evolucaoComposto.filter(filtro);
+
+  const labels = pontosComposto.map((p) => `${p.mes}m`);
+  const saldosSimples = pontosSimples.map((p) => Number(p.saldo.toFixed(2)));
+  const saldosComposto = pontosComposto.map((p) => Number(p.saldo.toFixed(2)));
+
+  const dados = {
+    labels,
+    datasets: [
+      {
+        label: 'Juros compostos',
+        data: saldosComposto,
+        borderColor: '#0f766e',
+        backgroundColor: 'rgba(15, 118, 110, 0.12)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: 0,
+      },
+      {
+        label: 'Juros simples',
+        data: saldosSimples,
+        borderColor: '#94a3b8',
+        borderDash: [4, 4],
+        fill: false,
+        tension: 0.25,
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  const opcoes = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      y: {
+        ticks: {
+          callback: (valor) =>
+            valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }),
+        },
+      },
+    },
+    plugins: {
+      legend: { position: 'bottom' },
+    },
+  };
+
+  if (graficoComparador) {
+    graficoComparador.data = dados;
+    graficoComparador.update();
+    return;
+  }
+
+  graficoComparador = new Chart(canvas, { type: 'line', data: dados, options: opcoes });
+}
+
 let grafico = null;
 
 /** Desenha (ou atualiza) o gráfico de evolução do investimento usando Chart.js. */

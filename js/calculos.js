@@ -46,3 +46,23 @@ export function anosParaMeses(anos) {
 export function taxaRealMensal(taxaNominalMensal, taxaInflacaoMensal) {
   return (1 + taxaNominalMensal) / (1 + taxaInflacaoMensal) - 1;
 }
+
+/**
+ * Calcula a evolução de um investimento com juros simples (sem aportes).
+ * @param {Object} params
+ * @param {number} params.valorInicial
+ * @param {number} params.taxaMensal - taxa de juros ao mês, em decimal
+ * @param {number} params.meses
+ * @returns {{ valorFinal: number, totalJuros: number, evolucao: Array }}
+ */
+export function calcularJurosSimples({ valorInicial, taxaMensal, meses }) {
+  const evolucao = [];
+  for (let mes = 0; mes <= meses; mes++) {
+    evolucao.push({ mes, saldo: valorInicial * (1 + taxaMensal * mes) });
+  }
+
+  const valorFinal = evolucao[evolucao.length - 1].saldo;
+  const totalJuros = valorFinal - valorInicial;
+
+  return { valorFinal, totalJuros, evolucao };
+}
