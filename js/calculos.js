@@ -66,3 +66,14 @@ export function calcularJurosSimples({ valorInicial, taxaMensal, meses }) {
 
   return { valorFinal, totalJuros, evolucao };
 }
+
+/**
+ * Retorna a alíquota de Imposto de Renda regressiva para renda fixa (ex: CDB),
+ * conforme os dias decorridos desde a aplicação.
+ */
+export function aliquotaIR(dias) {
+  if (dias <= 180) return 0.225;
+  if (dias <= 360) return 0.2;
+  if (dias <= 720) return 0.175;
+  return 0.15;
+}

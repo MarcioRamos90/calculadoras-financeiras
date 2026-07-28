@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SES8J0R5D2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SES8J0R5D2');
+  </script>
+  <title>Calculadora de Rentabilidade de CDB (com Imposto de Renda)</title>
+  <meta
+    name="description"
+    content="Simule quanto seu CDB rende de verdade, já descontando o Imposto de Renda regressivo. Veja o valor bruto, o imposto devido e o valor líquido final."
+  />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ctext x='50' y='68' font-size='56' font-family='Arial, sans-serif' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo">Calculadoras<span>Financeiras</span></a>
+      <nav class="nav-principal">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="pagina-intro">
+        <h1>Calculadora de Rentabilidade de CDB</h1>
+        <p>
+          Informe o valor investido, a taxa contratada e o período para descobrir quanto o seu
+          CDB rende de verdade — já descontando o Imposto de Renda regressivo sobre o lucro.
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="form-calculadora" class="form-calculadora">
+          <div class="form-grid">
+            <div class="campo">
+              <label for="valorInicial">Valor investido (R$)</label>
+              <input type="number" id="valorInicial" name="valorInicial" min="0" step="0.01" value="5000" required />
+            </div>
+
+            <div class="campo">
+              <label for="taxaValor">Taxa contratada</label>
+              <div class="campo-composto">
+                <input type="number" id="taxaValor" name="taxaValor" min="0" step="0.01" value="12" required />
+                <select id="taxaPeriodo" name="taxaPeriodo">
+                  <option value="anual" selected>% ao ano</option>
+                  <option value="mensal">% ao mês</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="tempoValor">Período</label>
+              <div class="campo-composto">
+                <input type="number" id="tempoValor" name="tempoValor" min="1" step="1" value="2" required />
+                <select id="tempoPeriodo" name="tempoPeriodo">
+                  <option value="anos">anos</option>
+                  <option value="meses">meses</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-calcular">Calcular</button>
+        </form>
+      </section>
+
+      <section id="painel-resultado" class="painel-resultado" hidden>
+        <div class="resultado-destaque">
+          <div class="rotulo">Valor líquido após <span id="resultado-periodo"></span> (já com IR)</div>
+          <div class="valor" id="resultado-valor-final-liquido"></div>
+        </div>
+
+        <div class="resultado-grid">
+          <div class="stat">
+            <div class="rotulo">Valor bruto (antes do IR)</div>
+            <div class="valor" id="resultado-valor-final-bruto"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Imposto de Renda devido</div>
+            <div class="valor" id="resultado-imposto-devido"></div>
+          </div>
+          <div class="stat">
+            <div class="rotulo">Juros líquidos ganhos</div>
+            <div class="valor" id="resultado-juros-liquidos"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Evolução do valor bruto</h2>
+          <div class="grafico-wrap">
+            <canvas id="grafico-evolucao"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--retangulo" aria-hidden="true">Espaço reservado para anúncio</div>
+
+      <section class="card conteudo-explicativo">
+        <h2>Como funciona o Imposto de Renda no CDB</h2>
+        <p>
+          O CDB segue a tabela regressiva do Imposto de Renda para renda fixa: quanto mais tempo
+          o dinheiro fica aplicado, menor a alíquota cobrada sobre o lucro. O imposto incide
+          apenas sobre os <strong>juros ganhos</strong>, nunca sobre o valor que você investiu.
+        </p>
+
+        <h2>Tabela regressiva de IR</h2>
+        <p>
+          Até 180 dias: <strong>22,5%</strong> sobre o lucro. De 181 a 360 dias:
+          <strong>20%</strong>. De 361 a 720 dias: <strong>17,5%</strong>. Acima de 720 dias:
+          <strong>15%</strong> — a menor alíquota da tabela. Por isso CDBs de prazo mais longo
+          tendem a ser mais eficientes em termos de imposto, além de normalmente pagarem uma
+          taxa contratada maior.
+        </p>
+
+        <h2>Uma observação sobre a taxa informada</h2>
+        <p>
+          Na prática, CDBs costumam ser vendidos como um percentual do CDI (ex: "110% do CDI") em
+          vez de uma taxa fixa. Esta calculadora trabalha com a taxa já contratada em percentual
+          direto — se o seu CDB é indexado ao CDI, converta antes o percentual do CDI para a taxa
+          equivalente ao ano usando a expectativa atual de CDI.
+        </p>
+
+        <p>
+          Os resultados são estimativas para fins de planejamento e educação financeira. O
+          cálculo do prazo em dias usa uma aproximação de 30 dias por mês para determinar a
+          alíquota de IR, e não considera IOF (que incide apenas em resgates antes de 30 dias) nem
+          taxas de administração.
+        </p>
+      </section>
+
+      <!-- Espaço reservado para anúncio (AdSense) — não inserir código ainda -->
+      <div class="ad-slot ad-slot--banner" aria-hidden="true">Espaço reservado para anúncio</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Calculadoras Financeiras. Todos os direitos reservados.</p>
+      <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="js/main-cdb.js"></script>
+</body>
+</html>

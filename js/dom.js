@@ -1,7 +1,7 @@
 // Leitura de inputs e escrita de resultados no DOM — única camada que toca o HTML.
 
 import { taxaAnualParaMensal, percentualParaDecimal, anosParaMeses } from './calculos.js';
-import { formatarMoeda, formatarPeriodo } from './formatador.js';
+import { formatarMoeda, formatarPeriodo, formatarPercentual } from './formatador.js';
 
 /** Lê e normaliza os valores do formulário da calculadora de juros compostos com inflação. */
 export function lerFormularioInflacao(form) {
@@ -156,6 +156,39 @@ export function renderGraficoComparador(canvas, evolucaoSimples, evolucaoCompost
   }
 
   graficoComparador = new Chart(canvas, { type: 'line', data: dados, options: opcoes });
+}
+
+/** Lê e normaliza os valores do formulário da calculadora de rentabilidade de CDB. */
+export function lerFormularioCDB(form) {
+  const valorInicial = Number(form.valorInicial.value) || 0;
+  const taxaValor = Number(form.taxaValor.value) || 0;
+  const taxaPeriodo = form.taxaPeriodo.value; // 'mensal' | 'anual'
+  const tempoValor = Number(form.tempoValor.value) || 0;
+  const tempoPeriodo = form.tempoPeriodo.value; // 'meses' | 'anos'
+
+  const taxaMensal =
+    taxaPeriodo === 'anual'
+      ? taxaAnualParaMensal(taxaValor)
+      : percentualParaDecimal(taxaValor);
+
+  const meses = tempoPeriodo === 'anos' ? anosParaMeses(tempoValor) : tempoValor;
+  const dias = Math.round(meses * 30);
+
+  return { valorInicial, taxaMensal, meses, dias };
+}
+
+/** Preenche os cartões de resultado com o rendimento bruto e líquido de IR do CDB. */
+export function renderResultadoCDB(elementos, resultado, aliquota, meses) {
+  const impostoDevido = resultado.totalJuros * aliquota;
+  const jurosLiquidos = resultado.totalJuros - impostoDevido;
+  const valorFinalLiquido = resultado.valorFinal - impostoDevido;
+
+  elementos.valorFinalLiquido.textContent = formatarMoeda(valorFinalLiquido);
+  elementos.valorFinalBruto.textContent = formatarMoeda(resultado.valorFinal);
+  elementos.impostoDevido.textContent = `${formatarMoeda(impostoDevido)} (${formatarPercentual(aliquota * 100, 1)})`;
+  elementos.jurosLiquidos.textContent = formatarMoeda(jurosLiquidos);
+  elementos.periodo.textContent = formatarPeriodo(meses);
+  elementos.painelResultado.hidden = false;
 }
 
 let grafico = null;
